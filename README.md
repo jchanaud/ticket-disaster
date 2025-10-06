@@ -1,11 +1,27 @@
 ## Welcome to Kafka CTF!
 
-In this challenge, you simply need to produce a message to Kafka with a ticket request id and wait one hour.  
+## Objective
+
+Request for a ticket in Kafka by writing a value in topic `tickets`.  
+Then wait an hour and get the flag. Easy.
+
+Format of the flag: `flag{xxxxx}`
+
+## Start
+
+**Web App**  
+http://195.154.119.34:8080/  
+
+**Kafka**
+````properties
+bootstrap.servers=195.154.119.34:9092
+security.protocol=SASL_PLAINTEXT
+sasl.mechanism=PLAIN
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="user1" password="user1-secret";
+````
+
+## Oh wait...
 
 Unfortunately, the DevOps (or should we say DevOOPS) has mistakenly left the ChaosMonkeyService 🙊 enabled in Production.
 
-As a result, all tickets disappear every 15 minutes!
-
-## Objective
-Browse the webapp and check the source code to figure out how to get to the flag.  
-Format of the flag: `flag{xxxxx}`
+As a result, all ticket requests disappear every 15 minutes!
