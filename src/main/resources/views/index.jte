@@ -30,7 +30,7 @@
 
     <label for="config"><code>config.properties</code></label>
     <textarea id="config" cols="40" rows="5">
-bootstrap.servers=${EXTERNAL_IP}:9092
+bootstrap.servers=195.154.119.34:9092
 security.protocol=SASL_PLAINTEXT
 sasl.mechanism=PLAIN
 sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="user1" password="user1-secret";</textarea>
@@ -50,7 +50,7 @@ producer.send(record).get();
             <button id="goBtn" type="submit">Get ticket</button>
         </div>
         <p class="help">Enter the ticket id above and press <strong>Open ticket</strong>. You will be redirected to <code>/tickets/&lt;your-id&gt;</code>.</p>
-        @if(response.startsWith("Success"))
+        @if(response != null && response.startsWith("Success"))
             <p class="success" aria-live="polite">${response}</p>
             <div style="width:100%;height:0;padding-bottom:67%;position:relative;"><iframe src="https://giphy.com/embed/Tp0DoOS8C7eBG" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div>
         @else

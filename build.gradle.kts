@@ -72,6 +72,10 @@ micronaut {
 tasks.named<io.micronaut.gradle.docker.NativeImageDockerfile>("dockerfileNative") {
     jdkVersion = "21"
 }
+tasks.named<io.micronaut.gradle.docker.MicronautDockerfile>("dockerfile") {
+    // Need jdk since I'm not precompiling jte templates during build
+    baseImage = "eclipse-temurin:21-jdk"
+}
 tasks.named<DockerBuildImage>("dockerBuild") {
     images.set(listOf("twobeeb/ticketdisaster"))
 }
