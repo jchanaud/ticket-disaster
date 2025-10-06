@@ -1,0 +1,42 @@
+services:
+  ticketdisaster:
+    # build: ./build/docker/main # local
+    image: twobeeb/ticketdisaster # remote
+    ports:
+      - "8080:8080"
+    environment:
+      FLAG: "***"
+  kafka:
+    image: apache/kafka
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./kafka_init.sh:/kafka_init.sh
+      - ./command.config:/opt/kafka/config/command.config
+    post_start:
+      - command: ["sh", "-c", "/kafka_init.sh"]
+    environment:
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://${EXTERNAL_IP}:9092,DOCKER://kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:SASL_PLAINTEXT,DOCKER:SASL_PLAINTEXT,HOST:SASL_PLAINTEXT
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
+      KAFKA_SASL_MECHANISM_CONTROLLER_PROTOCOL: PLAIN
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      # Authentication & Authorization
+      KAFKA_AUTHORIZER_CLASS_NAME: org.apache.kafka.metadata.authorizer.StandardAuthorizer
+      KAFKA_ALLOW_EVERYONE_IF_NO_ACL_FOUND: false
+      KAFKA_SUPER_USERS: User:admin
+      KAFKA_LISTENER_NAME_CONTROLLER_PLAIN_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="***" user_admin="***" user_user1="user1-secret";'
+      KAFKA_LISTENER_NAME_DOCKER_PLAIN_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="***" user_admin="***" user_user1="user1-secret";'
+      KAFKA_LISTENER_NAME_HOST_PLAIN_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="***" user_admin="***" user_user1="user1-secret";'
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: redis-server --appendonly yes

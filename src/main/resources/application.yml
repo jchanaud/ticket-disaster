@@ -1,0 +1,15 @@
+micronaut:
+  application:
+    name: ticketdisaster
+  views:
+    jte:
+      dynamic: true
+kafka:
+  bootstrap:
+    servers: kafka:9093
+  security.protocol: SASL_PLAINTEXT
+  sasl.mechanism: PLAIN
+  sasl.jaas.config: org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="***";
+redis:
+  uri: redis://redis:6379
+flag: '***' # That's not the real flag, silly.
